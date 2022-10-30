@@ -1,0 +1,162 @@
+version: '3.8'
+
+services:
+  # Admin
+  admin:
+    build:
+      context: .
+      dockerfile: ./admin/app/Dockerfile
+    container_name: admin
+    profiles:
+      - admin
+      - notifications
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - static_volume:/opt/app/static
+      - media_volume:/opt/app/media
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    profiles:
+      - admin
+      - notifications
+    volumes:
+      - ./admin/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./admin/configs:/etc/nginx/conf.d:ro
+      - ./admin/data:/data/:ro
+      - static_volume:/opt/app/static
+      - media_volume:/opt/app/media
+    depends_on:
+      - admin
+    ports:
+      - "80:80"
+
+  # Api
+  api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: api
+    profiles:
+      - api
+      - notifications
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "5005:5000"
+    command: gunicorn --bind 0.0.0.0:5000 wsgi_app:app
+
+  # Scheduler
+  app:
+    build:
+      context: .
+      dockerfile: ./scheduler/Dockerfile
+    container_name: scheduler
+    profiles:
+      - scheduler
+      - notifications
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file: .env
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis
+    profiles:
+      - scheduler
+      - notifications
+    restart: unless-stopped
+    ports:
+      - ${REDIS_PORT}:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      interval: 3s
+      timeout: 2s
+      retries: 50
+
+  # Broker
+  rabbit:
+    image: heidiks/rabbitmq-delayed-message-exchange:latest
+    container_name: rabbit
+    profiles:
+      - admin
+      - api
+      - scheduler
+      - notifications
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 25672:25672
+
+  # Worker
+  worker:
+    build:
+      context: .
+      dockerfile: ./worker/Dockerfile
+    container_name: worker
+    profiles:
+      - worker
+      - notifications
+    depends_on:
+      messages_history:
+        condition: service_healthy
+    env_file: .env
+    command:
+      "python main.py"
+
+  # Postgres
+  postgres:
+    image: postgres:14.3
+    container_name: postgres
+    profiles:
+      - admin
+      - notifications
+      - db
+    env_file:
+      - .env
+    volumes:
+      - admin:/var/lib/postgresql/data
+      - ./admin/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PORT=${DB_PORT}:5432
+
+  messages_history:
+    image: postgres:14.3
+    container_name: messages_history
+    profiles:
+      - worker
+      - notifications
+      - db
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${HISTORY_DB_NAME}
+      - POSTGRES_USER=${HISTORY_DB_USER}
+      - POSTGRES_PASSWORD=${HISTORY_DB_PASSWORD}
+    ports:
+      - ${HISTORY_DB_PORT}:5432
+    restart: unless-stopped
+    volumes:
+      - history:/var/lib/postgresql/data
+      - ./worker/storage/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: pg_isready -U ${HISTORY_DB_USER} -D ${HISTORY_DB_NAME} > /dev/null; if [[ $$? == 0 ]]; then echo 0; else echo 1; fi
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  static_volume:
+  media_volume:
+  history:
+  admin:

@@ -1,0 +1,10 @@
+psycopg2-binary==2.9.4
+pydantic[email]==1.9.2
+orjson==3.8.1
+pydantic==1.9.2
+aio_pika==8.2.4
+sendgrid==6.9.7
+pandas==1.5.1
+loguru==0.6.0
+backoff==2.2.1
+faker==15.1.1

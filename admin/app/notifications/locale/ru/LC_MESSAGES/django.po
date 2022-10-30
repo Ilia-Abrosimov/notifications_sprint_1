@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-21 13:19+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%"
+"100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\notifications\apps.py:10
+msgid "notifications"
+msgstr "Оповещения"
+
+#: .\notifications\models.py:28
+msgid "yes"
+msgstr "Да"
+
+#: .\notifications\models.py:29
+msgid "no"
+msgstr "Нет"
+
+#: .\notifications\models.py:36
+msgid "Draft"
+msgstr "Черновик"
+
+#: .\notifications\models.py:37
+msgid "Saved"
+msgstr "Отложено"
+
+#: .\notifications\models.py:38
+msgid "Sent"
+msgstr "Отправлено"
+
+#: .\notifications\models.py:41
+msgid "email"
+msgstr ""
+
+#: .\notifications\models.py:42
+msgid "web"
+msgstr ""
+
+#: .\notifications\models.py:43
+msgid "app"
+msgstr ""
+
+#: .\notifications\models.py:44
+msgid "sms"
+msgstr ""
+
+#: .\notifications\models.py:47
+msgid "info"
+msgstr ""
+
+#: .\notifications\models.py:49
+msgid "title"
+msgstr "Название"
+
+#: .\notifications\models.py:50
+msgid "description"
+msgstr "Описание"
+
+#: .\notifications\models.py:51
+msgid "recipients"
+msgstr "Получатели"
+
+#: .\notifications\models.py:52
+msgid "content"
+msgstr "Содержание"
+
+#: .\notifications\models.py:53
+msgid "status"
+msgstr "Статус"
+
+#: .\notifications\models.py:55
+msgid "channel"
+msgstr "Канал отправки"
+
+#: .\notifications\models.py:57
+msgid "timezone checking"
+msgstr "Проверка часового пояса"
+
+#: .\notifications\models.py:60
+msgid "relevance checking"
+msgstr "Проверка актуальности"
+
+#: .\notifications\models.py:63
+msgid "message group"
+msgstr "Группа сообщений"
+
+#: .\notifications\models.py:65
+msgid "template"
+msgstr "Шаблон"
+
+#: .\notifications\models.py:72
+msgid "message"
+msgstr "Сообщение"
+
+#: .\notifications\models.py:73
+msgid "messages"
+msgstr "Сообщения"
